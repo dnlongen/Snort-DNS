@@ -1,0 +1,25 @@
+# $Id: local.rules,v 1.11 2004/07/23 20:15:44 bmc Exp $
+# ----------------
+# LOCAL RULES
+# ----------------
+# This file intentionally does not come with signatures.  Put your local
+# additions here.
+
+var DNS_IPS [208.67.222.222,208.67.220.220,208.67.222.123]
+
+# Permit alternate DNS from my research box, then alert on DNS queries from anything else
+pass udp x.x.x.x any <> any 53 (msg:"Allow alternate DNS from test box"; sid:10000001; rev:001;)
+alert udp $HOME_NET any -> ![$HOME_NET,$DNS_IPS] 53 (msg:"DNS request not to OpenDNS"; sid:10000002; rev:001;)
+
+# Alert on DNS request for known phishing: OpenDNS response is |43 D7 41 85| = 67.215.65.133
+alert udp any 53 -> $HOME_NET any (msg:"DNS request for phish"; sid:10000003; rev:001; content:"|43 D7 41 85|";)
+
+# Alert on DNS request for known adult content: OpenDNS response is |43 D7 41 82| = 67.215.65.130
+alert udp any 53 -> $HOME_NET any (msg:"DNS request for adult content"; sid:10000004; rev:001; content:"|43 D7 41 82|";)
+
+# Alert on DNS request for known malware: OpenDNS responses are |43 D7 42 95| = 67.215.66.149; |43 D7 42 96| = 67.215.66.150
+alert udp any 53 -> $HOME_NET any (msg:"DNS request for malicious content"; sid:10000005; rev:001; content:"|43 D7 42 95|";)
+alert udp any 53 -> $HOME_NET any (msg:"DNS request for malicious content"; sid:10000006; rev:001; content:"|43 D7 42 96|";)
+
+# Log any other DNS packets in tcpdump format while testing
+log udp any 53 <> $HOME_NET any (sid:10000007; rev:001;)
