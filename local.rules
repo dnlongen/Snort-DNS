@@ -14,8 +14,8 @@ alert udp $HOME_NET any -> ![$HOME_NET,$DNS_IPS] 53 (msg:"DNS request not to Ope
 # Alert on DNS request for known phishing: OpenDNS response is |43 D7 41 85| = 67.215.65.133
 alert udp any 53 -> $HOME_NET any (msg:"DNS request for phish"; sid:10000003; rev:001; content:"|43 D7 41 85|";)
 
-# Alert on DNS request for known adult content: OpenDNS response is |43 D7 41 82| = 67.215.65.130
-alert udp any 53 -> $HOME_NET any (msg:"DNS request for adult content"; sid:10000004; rev:001; content:"|43 D7 41 82|";)
+# Alert on DNS request for blocked content: OpenDNS response is |43 D7 41 82| = 67.215.65.130
+alert udp any 53 -> $HOME_NET any (msg:"DNS request for blocked content"; sid:10000004; rev:001; content:"|43 D7 41 82|";)
 
 # Alert on DNS request for known malware: OpenDNS responses are |43 D7 42 95| = 67.215.66.149; |43 D7 42 96| = 67.215.66.150
 alert udp any 53 -> $HOME_NET any (msg:"DNS request for malicious content"; sid:10000005; rev:001; content:"|43 D7 42 95|";)
