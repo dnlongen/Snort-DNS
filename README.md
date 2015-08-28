@@ -7,7 +7,7 @@ I use OpenDNS Family Shield as my domain name service. It's an effective way of 
 
 This project takes advantage of this fact. The local.rules file contains a set of Snort rules that identify DNS responses (packets from udp port 53 destined for a device on the local network), then inspects the payload. If the payload includes one of OpenDNS' blocked content landing pages, the rule will fire an alert.
 
-For more details on how this works, and suggested improvements, see http://www.securityforrealpeople.com/snort-dns/2015/01/detecting-malware-through-dns-queries.html
+For more details on how this works, and suggested improvements, see http://www.securityforrealpeople.com/snort-dns
 
 1. The alert tells me the IP address of the offending computer or device, but not the domain name that was requested. I have Snort configured to store each packet that triggered an alert, and can use tcpdump to analyse the packets - but that's a bit of a pain. Do any readers know of a way to include payload fields from a DNS packet in the alert message?
  
