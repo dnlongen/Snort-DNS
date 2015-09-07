@@ -1,0 +1,14 @@
+# All rules use -C to check for existing rule, then -A only if the rule does not already exist. Avoids duplicating the same rule.
+# mirror all traffic to snort
+# replace s.s.s.s with IP address of your snort listener
+iptables -t mangle -C POSTROUTING -j ROUTE --tee --gw s.s.s.s || iptables -t mangle -A POSTROUTING -j ROUTE --tee --gw s.s.s.s
+
+# allow DNS to/from all for test boxes only, else to OpenDNS only
+# The below order is important as it inserts the allow rules to be processed before the deny rule 
+# replace x.x.x.x/24 with your private network range
+# replace y.y.y.y with your router's default gateway or internal DNS server
+# replace z.z.z.z with one or more hosts for which to allow other DNS destinations
+iptables -C FORWARD -p udp --dport 53 -j DROP || iptables -I FORWARD -p udp --dport 53 -j DROP
+iptables -C FORWARD -d 208.67.220.0/22 -p udp --dport 53 -j ACCEPT || iptables -I FORWARD -d 208.67.220.0/22 -p udp --dport 53 -j ACCEPT
+iptables -C FORWARD -s x.x.x.x/24 -d y.y.y.y -p udp --dport 53 -j ACCEPT || iptables -I FORWARD -s x.x.x.x/24 -d y.y.y.y -p udp --dport 53 -j ACCEPT
+iptables -C FORWARD -s z.z.z.z -p udp --dport 53 -j ACCEPT || iptables -I FORWARD -s z.z.z.z -p udp --dport 53 -j ACCEPT
